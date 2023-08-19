@@ -1,0 +1,172 @@
+#1-----
+class Date24:
+    day: int
+    month: int
+    year: int
+
+    def __init__(self, date_string: str):
+        numbers = Date24.extract_numbers(date_string)
+        self.validate_numbers(numbers)
+
+        self.day, self.month, self.year = numbers
+
+    @classmethod
+    def extract_numbers(cls, date_string: str) -> list:
+        return [int(x) for x in date_string.split('-')]
+
+    @staticmethod
+    def validate_numbers(numbers: list):
+        d, m, y = numbers
+
+        assert 1 <= d <= 31, "РќРµР»СЊР·СЏ:РЅРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ С‡РёСЃР»Р°"
+        assert 1 <= m <= 12, "РќРµР»СЊР·СЏ:РЅРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ РјРµСЃСЏС†Р°"
+        assert 1970 <= y <= 2100, "РќРµР»СЊР·СЏ:РЅРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ РіРѕРґР°"
+
+
+date = Date24('24-00-2001')
+
+
+#2
+class ErrorDivisionByZero(Exception):
+    def __init__(self, txt):
+        self.txt = txt
+
+
+def divider(x, y):
+    if y == 0:
+        raise ErrorDivisionByZero(f'{x} / {y} = Division By Zero Error!')
+    return x / y
+
+
+try:
+    divider(6, 0)
+except ErrorDivisionByZero as e:
+    print(e)
+
+print(f"90 / 9 = {divider(45, 5)}")
+
+#3
+
+class NotNumberListValueException(Exception):
+    pass
+
+
+def append_number(numlist: list):
+    value = input("Your number:  ")
+
+    try:
+        numlist.append(float(value))
+    except ValueError:
+        raise NotNumberListValueException(f"Incorrect: '{value}' is not a number")
+
+
+nums = []
+
+while True:
+    try:
+        append_number(nums)
+    except NotNumberListValueException as exception:
+        print(exception)
+    except KeyboardInterrupt:
+        print(f"\nList of numbers = {nums}")
+        break
+    
+#4
+
+class orgtechWarehouse:
+    __storage = []
+    __summary = {}
+
+    def push(self, equip):
+        if not isinstance(equip, OfficeEquip):
+            raise Exception('РџСЂРёРЅРёРјР°РµРј С‚РѕР»СЊРєРѕ РѕСЂРіС‚РµС…РЅРёРєСѓ')
+        self.__storage.append(equip)
+        if self.__summary.get(equip.type) is not None:
+            self.__summary[equip.type] += 1
+        else:
+            self.__summary.setdefault(equip.type, 1)
+
+    def itemreport(self):
+        for item in self.__storage:
+            print(item)
+
+    def totalreport(self):
+        for k, v in self.__summary.items():
+            print(f'{k}: {v} РєРѕР»РёС‡РµСЃС‚РІРѕ С€С‚СѓРє')
+
+
+class OfficeEquip:
+    def __init__(self, type: str, model: str, cost: float, sn: str):
+        self.type = str(type)
+        self.model = str(model)
+        self.cost = float(cost)
+        self.sn = str(sn)
+
+    def __str__(self):
+        return f"{self.type} {self.model}"
+
+
+class Printer(OfficeEquip):
+    def __init__(self, model: str, cost: float, is_colorful: bool, sn: str):
+        self.is_colorful = is_colorful
+        super().__init__('РїСЂРёРЅС‚РµСЂ', model, cost, sn)
+
+
+class Scanner(OfficeEquip):
+    def __init__(self, model: str, cost: float, dpi: str, sn: str):
+        self.dpi = dpi
+        super().__init__('cРєР°РЅРµСЂ', model, cost, sn)
+
+
+class Copier(OfficeEquip):
+    def __init__(self, model: str, cost: float, is_colorful: bool, dpi: str, velocity: int, sn: str):
+        self.is_colorful = is_colorful
+        self.dpi = dpi
+        self.velocity = velocity
+        super().__init__('РњР¤РЈ', model, cost, sn)
+
+
+if __name__ == '__main__':
+    pr = Printer('Epsilon L1', 7000.1, True, '65482321F')
+    sc = Scanner('Cannon H2', 6789.3, '4800x4800', '78956873YTE')
+    cop = Copier('Canon K9', 1239.83, True, '4800x600', 13, '8HG453JK')
+
+
+    wh=orgtechWarehouse()
+    wh.push(pr)
+    wh.push(sc)
+    wh.push(cop)
+    wh.itemsreport()
+    wh.totalreport()
+    
+#7
+
+class ComplexNum:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __add__(self, other):
+        x = self.x + other.x
+        y = self.y + other.y
+        return ComplexNum(x, y)
+
+    def __mul__(self, other):
+        x = (self.x * other.x) - (self.y * other.y)
+        y = (self.x * other.y) + (self.y * other.x)
+        return ComplexNum(x, y)
+
+    def __str__(self):
+        return f'{self.x} + {self.y}i'
+
+
+if __name__ == '__main__':
+    z1 = ComplexNum(1, 3)
+    z2 = ComplexNum(2, 3)
+    z3 = z1 + z2
+    z4 = z1 * z2
+
+    print(f'z1 = {z1}')         
+    print(f'z2 = {z2}')         
+    print(f'z1 + z2 = {z3}')    
+    print(f'z1 * z2 = {z4}')    
